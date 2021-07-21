@@ -1,5 +1,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const chalk = require('chalk');
+const figlet = require('figlet');
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -21,6 +23,10 @@ connection.connect((err) => {
 });
 
 const runEmployee = () => {
+  const banner_wall = chalk.bold.blueBright('\n=====================================================================================\n');
+  const banner_msg = chalk.bold.blue(figlet.textSync('Employee Tracker'));
+  const app_author = chalk.bold.white(`\n\n                          Copyright @ 2021 by Israel Magallon\n`);
+  console.log(banner_wall + banner_msg + app_author + banner_wall);
   inquirer
     .prompt({
       name: "action",
@@ -75,5 +81,100 @@ const runEmployee = () => {
           console.log(`Invalid action: ${answer.action}`);
           break;
       }
+    });
+};
+
+const viewEmployees = () => {
+  console.log("Viewing all Employees...\n");
+  connection.query(
+    `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary, employee.manager_id 
+   FROM employee, role, department;`,
+    (err, res) => {
+      if (err) throw err;
+      // Log all results of the SELECT statement
+      console.log(res);
+      runEmployee();
+    }
+  );
+};
+
+const addRole = () => {
+  inquirer
+    .prompt([
+      {
+        name: "title",
+        type: "input",
+        message: "What is your Title?",
+      },
+      {
+        name: "salary",
+        type: "input",
+        message: "Please enter salary for role",
+      },
+      {
+        name: "department_id",
+        type: "input",
+        message: "What is the Department Code?",
+      },
+    ])
+    .then((answer) => {
+      console.log("Adding role...\n");
+      const query = connection.query(
+        `INSERT INTO role(title, salary, role_id, manager_id)
+      VALUES (  "${answer.first}",
+                "${answer.last}",
+                ${answer.roleID},
+                ${answer.managerID})`,
+
+        (err, res) => {
+          if (err) throw err;
+          console.log(`${res.affectedRows} Employee Added!\n`);
+          // Call updateProduct AFTER the INSERT completes
+          runEmployee();
+        }
+      );
+    });
+};
+
+const addEmployee = () => {
+  inquirer
+    .prompt([
+      {
+        name: "first",
+        type: "input",
+        message: "What is the first name of your new employee?",
+      },
+      {
+        name: "last",
+        type: "input",
+        message: "What is the last name of your new employee?",
+      },
+      {
+        name: "roleID",
+        type: "input",
+        message: "What is their role ID?",
+      },
+      {
+        name: "managerID",
+        type: "input",
+        message: "Who is their manager?",
+      },
+    ])
+    .then((answer) => {
+      console.log("Adding a new Employee...\n");
+      const query = connection.query(
+        `INSERT INTO employee(first_name, last_name, role_id, manager_id)
+        VALUES (  "${answer.first}",
+                  "${answer.last}",
+                  ${answer.roleID},
+                  ${answer.managerID})`,
+
+        (err, res) => {
+          if (err) throw err;
+          console.log(`${res.affectedRows} Employee Added!\n`);
+          // Call updateProduct AFTER the INSERT completes
+          runEmployee();
+        }
+      );
     });
 };
