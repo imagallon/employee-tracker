@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const chalk = require('chalk');
-const figlet = require('figlet');
+const chalk = require("chalk");
+const figlet = require("figlet");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -23,9 +23,13 @@ connection.connect((err) => {
 });
 
 const runEmployee = () => {
-  const banner_wall = chalk.bold.blueBright('\n=====================================================================================\n');
-  const banner_msg = chalk.bold.blue(figlet.textSync('Employee Tracker'));
-  const app_author = chalk.bold.white(`\n\n                          Copyright @ 2021 by Israel Magallon\n`);
+  const banner_wall = chalk.bold.blueBright(
+    "\n=====================================================================================\n"
+  );
+  const banner_msg = chalk.bold.blue(figlet.textSync("Employee Tracker"));
+  const app_author = chalk.bold.white(
+    `\n\n                          Copyright @ 2021 by Israel Magallon\n`
+  );
   console.log(banner_wall + banner_msg + app_author + banner_wall);
   inquirer
     .prompt({
@@ -120,15 +124,15 @@ const addRole = () => {
     .then((answer) => {
       console.log("Adding role...\n");
       const query = connection.query(
-        `INSERT INTO role(title, salary, role_id, manager_id)
-      VALUES (  "${answer.first}",
-                "${answer.last}",
-                ${answer.roleID},
-                ${answer.managerID})`,
+        `INSERT INTO role(title, salary, department_id)
+      VALUES (  "${answer.title}",
+                ${answer.salary},
+                ${answer.department_id}
+                )`,
 
         (err, res) => {
           if (err) throw err;
-          console.log(`${res.affectedRows} Employee Added!\n`);
+          console.log(`${res.affectedRows} Role Added!\n`);
           // Call updateProduct AFTER the INSERT completes
           runEmployee();
         }
