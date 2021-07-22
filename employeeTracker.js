@@ -102,6 +102,20 @@ const viewEmployees = () => {
     runEmployee();
 };
 
+const viewDepartments = () => {
+  console.log("Viewing all Employees by Departments...\n");
+  connection.query(
+    `SELECT employee.id, employee.first_name, employee.last_name, department.department,
+     employee.manager_id FROM employee join  department on employee.id = department.id;`,
+    (err, res) => {
+      if (err) throw err;
+      // Log all results of the SELECT statement
+      console.log(res);
+    }
+    );
+    runEmployee();
+};
+
 const viewRoles = () => {
   console.log("Viewing all Employees by Roles...\n");
   connection.query(
