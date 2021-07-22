@@ -102,6 +102,31 @@ const viewEmployees = () => {
   );
 };
 
+const addDepartment = () => {
+  inquirer
+    .prompt([
+      {
+        name: "department",
+        type: "input",
+        message: "What Department would you like to Add?",
+      },
+    ])
+    .then((answer) => {
+      console.log("Adding Department...\n");
+      const query = connection.query(
+        `INSERT INTO department(department)
+      VALUES ( "${answer.department}")`,
+
+        (err, res) => {
+          if (err) throw err;
+          console.log(`${res.affectedRows} Department Added!\n`);
+          // Call updateProduct AFTER the INSERT completes
+          runEmployee();
+        }
+      );
+    });
+};
+
 const addRole = () => {
   inquirer
     .prompt([
