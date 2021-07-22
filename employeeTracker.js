@@ -97,9 +97,23 @@ const viewEmployees = () => {
       if (err) throw err;
       // Log all results of the SELECT statement
       console.log(res);
-      runEmployee();
     }
-  );
+    );
+    runEmployee();
+};
+
+const viewRoles = () => {
+  console.log("Viewing all Employees by Roles...\n");
+  connection.query(
+    `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, role.department_id,
+     employee.manager_id FROM employee join role on employee.id = role.id;`,
+    (err, res) => {
+      if (err) throw err;
+      // Log all results of the SELECT statement
+      console.log(res);
+    }
+    );
+    runEmployee();
 };
 
 const addDepartment = () => {
