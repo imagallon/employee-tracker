@@ -2,6 +2,7 @@ const mysql = require("mysql");
 const inquirer = require("inquirer");
 const chalk = require("chalk");
 const figlet = require("figlet");
+const cTable = require("console.table");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -91,12 +92,12 @@ const runEmployee = () => {
 const viewEmployees = () => {
   console.log("Viewing all Employees...\n");
   connection.query(
-    `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department, role.salary, employee.manager_id 
-   FROM employee, role, department;`,
+    `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, role.department_id,
+     employee.manager_id FROM employee join  role on employee.id = role.id; `,
     (err, res) => {
       if (err) throw err;
-      // Log all results of the SELECT statement
-      console.log(res);
+      console.table("============================================\n");
+      console.table(res);
     }
   );
   runEmployee();
@@ -109,8 +110,8 @@ const viewDepartments = () => {
      employee.manager_id FROM employee join  department on employee.id = department.id;`,
     (err, res) => {
       if (err) throw err;
-      // Log all results of the SELECT statement
-      console.log(res);
+      console.table("============================================\n");
+      console.table(res);
     }
   );
   runEmployee();
@@ -122,9 +123,9 @@ const viewRoles = () => {
     `SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, role.department_id,
      employee.manager_id FROM employee join role on employee.id = role.id;`,
     (err, res) => {
-      if (err) throw err;
-      // Log all results of the SELECT statement
-      console.log(res);
+      if (err) throw err; 
+      console.table("============================================\n");
+      console.table(res);
     }
   );
   runEmployee();
@@ -148,7 +149,7 @@ const addDepartment = () => {
         (err, res) => {
           if (err) throw err;
           console.log(`${res.affectedRows} Department Added!\n`);
-          // Call updateProduct AFTER the INSERT completes
+          
           runEmployee();
         }
       );
@@ -213,11 +214,11 @@ const addEmployee = () => {
           name: "roleID",
           type: "rawlist",
           choices: function () {
-            // var choiceArray = [];
-            // for (var i = 0; i < results.length; i++) {
-            //   choiceArray.push(results[i].title);
-            // }
-            const roles = results.map( ({title, id}) => ({ name: title, value: id}) );
+            
+            const roles = results.map(({ title, id }) => ({
+              name: title,
+              value: id,
+            }));
 
             return roles;
           },
@@ -228,14 +229,12 @@ const addEmployee = () => {
           type: "list",
           message: "Who is their manager?",
           choices: function () {
-            connection.query("SELECT * FROM employee", function hello(err, results) {
-              console.log(`results: ${results}`);
-              if (err) throw err;
-              const managers = results.map( ({ first_name, last_name, id }) => ({ name: `${first_name} ${last_name}`, value: id }) );
-
-              return managers;
-            }).then( () => hello());
-          }
+            connection.query("SELECT * FROM employee", function (err, results) {
+              const managers = results.map(({ first_name, last_name, id }) => ({
+                name: `${first_name} ${last_name}`,
+              }));
+            });
+          },
         },
       ])
       .then((answer) => {
@@ -250,131 +249,10 @@ const addEmployee = () => {
           (err, res) => {
             if (err) throw err;
             console.log(`${res.affectedRows} Employee Added!\n`);
-            // Call updateProduct AFTER the INSERT completes
+            
             runEmployee();
           }
         );
       });
   });
 };
-
-// function addEmployee() {
-
-//   connection.query("SELECT * FROM role", function (err, results) {
-//       if (err) throw err;
-
-//       inquirer.prompt([
-
-//           {
-//               type: "input",
-//               name: "firstname",
-//               message: "What is the employee's first name?"
-//           },
-//           {
-//               type: "input",
-//               name: "lastname",
-//               message: "What is the employee's last name?"
-//           },
-//           {
-//               name: "choice",
-//               type: "rawlist",
-//               choices: function () {
-//                   var choiceArray = [];
-//                   for (var i = 0; i < results.length; i++) {
-//                       choiceArray.push(results[i].title);
-//                   }
-
-//                   return choiceArray;
-//               },
-//               message: "What is the employee's role?"
-//           },
-
-//           {
-//               type: "input",
-//               name: "manager",
-//               message: "What is the employee's manager?"
-//           }
-
-//       ]).then(function (res) {
-
-//           for (var i = 0; i < results.length; i++) {
-//               if (results[i].title === res.choice) {
-//                   res.role_id = results[i].id;
-//               }
-//           }
-//           var query = "INSERT INTO employee SET ?"
-//           const VALUES = {
-//               first_name: res.firstname,
-//               last_name: res.lastname,
-//               role_id: res.role_id
-//               // manager_id: employee(id)
-//           }
-//           connection.query(query, VALUES, function (err) {
-//               if (err) throw err;
-//               console.log("Employee successfully added!");
-//               determineAction()
-//           }
-
-//           )
-//       })
-//   })
-
-// }
-
-// const bidAuction = () => {
-//   // query the database for all items being auctioned
-//   connection.query("SELECT * FROM auctions", (err, results) => {
-//     if (err) throw err;
-//     // once you have the items, prompt the user for which they'd like to bid on
-//     const choiceArray = results.map((row) => row.item_name);
-//     inquirer
-//       .prompt([
-//         {
-//           name: "choice",
-//           type: "rawlist",
-//           choices: choiceArray,
-//           message: "What auction would you like to place a bid in?",
-//         },
-//         {
-//           name: "bid",
-//           type: "input",
-//           message: "How much would you like to bid?",
-//         },
-//       ])
-//       .then((answer) => {
-//         // get the information of the chosen item
-//         let chosenItem;
-//         console.log(results);
-//         results.forEach((item) => {
-//           if (item.item_name === answer.choice) {
-//             chosenItem = item;
-//           }
-//         });
-
-//         // determine if bid was high enough
-//         if (chosenItem.highest_bid < parseInt(answer.bid)) {
-//           // bid was high enough, so update db, let the user know, and start over
-//           connection.query(
-//             "UPDATE auctions SET ? WHERE ?",
-//             [
-//               {
-//                 highest_bid: answer.bid,
-//               },
-//               {
-//                 id: chosenItem.id,
-//               },
-//             ],
-//             (error) => {
-//               if (error) throw err;
-//               console.log("Bid placed successfully!");
-//               start();
-//             }
-//           );
-//         } else {
-//           // bid wasn't high enough, so apologize and start over
-//           console.log("Your bid was too low. Try again...");
-//           start();
-//         }
-//       });
-//   });
-//
