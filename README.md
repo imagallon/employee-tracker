@@ -22,10 +22,32 @@ npm i for
 chalk, console.table, figlet,inquirer, and mysql
 
 ## Usage
+This is a quick demo of the app:
+https://drive.google.com/file/d/1jvU1WQFVs6qwFdLLV0GB9-C5GldSp92a/view
 
-Provide instructions and examples for use. Include screenshots as needed.
-To add a screenshot, create an `assets/images` folder in your repository and upload your screenshot to it. Then, using the relative filepath, add it to your README using the following syntax:
-`md ![alt text](assets/images/screenshot.png) `
+
+This is the main menu
+
+![image](https://user-images.githubusercontent.com/85265225/126736712-0c2c2905-8705-49f9-813a-efb5181168c4.png)
+
+Users can cycle through the options with the arrow keys on the keyboard
+
+![image](https://user-images.githubusercontent.com/85265225/126736772-718d9f0d-2c2c-40e7-8d83-e4b8363da330.png)
+
+
+Selecting any of the view options will display a table 
+
+![image](https://user-images.githubusercontent.com/85265225/126736827-26e98b6f-9ce1-48c9-8259-0d66887232d4.png)
+
+Users can currently add Roles and Departments by Selecting one of those options
+
+![image](https://user-images.githubusercontent.com/85265225/126737005-89379032-3a76-4bf2-8dbf-d129b8aeaf7d.png)
+
+![image](https://user-images.githubusercontent.com/85265225/126737045-ef4dd816-4e59-4841-b3c3-612d6ac45359.png)
+
+
+
+
 
 ## License
 
